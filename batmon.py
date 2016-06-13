@@ -40,46 +40,50 @@ class Batmon(Daemon):
 
     def __init__(self, config):
         self.config = config
+
         #we need to do this here since daemonize redirects stdout and stderr
         if self.config.criticalThreshold != None:
+            #check if root
             if os.geteuid() != 0:
                 sys.stderr.write("You need to be root to run with a critical threshold.\nPlease try again using 'sudo'.\n")
                 exit(0)
+
+        if len(batinfo.Batteries().stat) <1:
+            sys.stderr.write("No battery found")
+
         super(Batmon, self).__init__(PID_PATH)
 
     def run(self):
         self.main()
 
+    def getIsCritcalHandled(self):
+        return self.config.criticalThreshold == None
+
     def main(self):
         bat = batinfo.Batteries()
         isWarningHandled = False
-        if self.config.criticalThreshold == None:
-            iscriticalHandled = True
-        else:
-            #check if root
-            iscriticalHandled = False
+        isCriticalHandled = self.getIsCritcalHandled()
 
-        if len(bat.stat) <1:
-            sys.stderr.write("No battery found")
-            self.daemon_alive = False
-            sys.exit(1)
-
-        while(not isWarningHandled or not iscriticalHandled):
+        while(True):
             bat.update()
             stat = bat.stat[0]
 
             if stat.status == Status.discharging:
+
                 if (not isWarningHandled) and  stat.capacity < self.config.warningThreshold:
                     if not self.config.silent:
                         Popen(WARNING_SOUND_CMD)
                     Popen(WARNING_POPUP_CMD)
                     isWarningHandled = True
 
-                if not iscriticalHandled and stat.capacity <= self.config.criticalThreshold:
-                    #TODO: handle critical
+                if not isCriticalHandled and stat.capacity <= self.config.criticalThreshold:
                     Popen(CRITICAL_SUSPEND_CMD)
-                    self.daemon_alive = False
-                    sys.exit()
+                    isCriticalHandled = True
+
+            elif isWarningHandled and isCriticalHandled:
+                #we are charging - re-enable the checks:
+                isWarningHandled = False
+                isCriticalHandled = self.getIsCritcalHandled()
 
             time.sleep(self.config.pollInterval)
 
