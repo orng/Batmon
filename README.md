@@ -45,6 +45,7 @@ Batmon depends on the following shell commands
 * paplay
 * pm-suspend
 * [python-daemon](https://github.com/serverdensity/python-daemon) (included in this repo)
+* [BatInfo](https://github.com/nicolargo/batinfo) (pip install batinfo)
 
 ##TODO
 * Allow the user to configure the commands run after hitting the thresholds
