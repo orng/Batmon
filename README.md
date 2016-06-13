@@ -19,11 +19,11 @@ optional arguments:
   -h, --help            show this help message and exit
   -t, --terminate       stop the daemon
   -s, --start           start the daemon
-  -c CRITICALTHRESHOLD, --criticalThreshold CRITICALTHRESHOLD
+  -c CRITICALTHRESHOLD, --critical CRITICALTHRESHOLD
                         (requires root) the battery percentage at which the computer is
                         suspended.  If not set Batmon will not suspend the
                         computer on low battery.
-  -w WARNINGTHRESHOLD, --warningThreshold WARNINGTHRESHOLD
+  -w WARNINGTHRESHOLD, --warning WARNINGTHRESHOLD
                         the battery percentage at which a low battery warning
                         is issued. If not set the default value of 10 is used.
   -p POLLINTERVAL, --pollInterval POLLINTERVAL

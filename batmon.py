@@ -89,9 +89,9 @@ if __name__ == '__main__':
             help='stop the daemon')
     parser.add_argument('-s', '--start', action='store_true',
             help='start the daemon')
-    parser.add_argument('-c', '--criticalThreshold', default=None,
+    parser.add_argument('-c', '--critical', default=None,
             help='(requires root) the battery percentage at which the computer is suspended. If not set Batmon will not suspend the computer on low battery.')
-    parser.add_argument('-w', '--warningThreshold', default=10, type=int,
+    parser.add_argument('-w', '--warning', default=10, type=int,
             help='the battery percentage at which a low battery warning is issued. If not set the default value of 10 is used.')
     parser.add_argument('-p', '--pollInterval', default=60, type=int,
             help='the interval in which the battery status is polled. Default = 60.')
@@ -102,8 +102,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     config = Config(
-                args.warningThreshold,
-                args.criticalThreshold,
+                args.warning,
+                args.critical,
                 args.pollInterval,
                 args.silent,
             )
